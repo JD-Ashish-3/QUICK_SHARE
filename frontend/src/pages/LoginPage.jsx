@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import assets from "../assets/assets";
 import { AppContext } from "../context/AppContext";
+import clsx from "clsx";
 
 const LoginPage = () => {
   const [authMode, setAuthMode] = useState("Sign up");
@@ -10,24 +11,23 @@ const LoginPage = () => {
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const {login} = useContext(AppContext)
+  const { login } = useContext(AppContext);
 
   const onSubmitHandler = (event) => {
-  event.preventDefault();
+    event.preventDefault();
 
-  if (authMode === "Sign up" && !isDataSubmitted) {
-    setIsDataSubmitted(true);
-    return;
-  }
+    if (authMode === "Sign up" && !isDataSubmitted) {
+      setIsDataSubmitted(true);
+      return;
+    }
 
-  login(authMode === "Sign up" ? 'signup' : 'login', {
-    fullName,
-    email,
-    password,
-    bio,
-  });
-};
-
+    login(authMode === "Sign up" ? "signup" : "login", {
+      fullName,
+      email,
+      password,
+      bio,
+    });
+  };
 
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
@@ -51,7 +51,7 @@ const LoginPage = () => {
           )}
         </h2>
 
-        {/* Sign Up: Full Name (only before initial submit) */}
+        {/* Full Name (Sign up only before submit) */}
         {authMode === "Sign up" && !isDataSubmitted && (
           <input
             onChange={(e) => setFullName(e.target.value)}
@@ -63,7 +63,7 @@ const LoginPage = () => {
           />
         )}
 
-        {/* Common: Email + Password */}
+        {/* Email + Password (before submit) */}
         {!isDataSubmitted && (
           <>
             <input
@@ -85,7 +85,7 @@ const LoginPage = () => {
           </>
         )}
 
-        {/* Bio field after sign up */}
+        {/* Bio (after first submit during sign up) */}
         {authMode === "Sign up" && isDataSubmitted && (
           <textarea
             onChange={(e) => setBio(e.target.value)}
@@ -97,14 +97,16 @@ const LoginPage = () => {
           />
         )}
 
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={!agreed}
-          className={`py-3 rounded-md text-white ${
+          className={clsx(
+            "py-3 rounded-md text-white",
             agreed
               ? "bg-gradient-to-r from-purple-400 to-violet-600 cursor-pointer"
               : "bg-gray-400 cursor-not-allowed"
-          }`}
+          )}
         >
           {authMode === "Sign up" ? "Create Account" : "Login Now"}
         </button>
@@ -119,7 +121,7 @@ const LoginPage = () => {
           <p>Agree to the terms of use & privacy policy.</p>
         </div>
 
-        {/* Switch between login/sign up */}
+        {/* Switch Login/Signup */}
         <div className="flex flex-col gap-2">
           {authMode === "Sign up" ? (
             <p className="text-sm text-gray-300">
