@@ -1,16 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import assets, { messagesDummyData } from "../assets/assets";
+import assets from "../assets/assets";
 import { forMessageTime } from "../lib/utils";
 import { ChatContext } from "../context/ChatContext";
 import { AppContext } from "../context/AppContext";
+import clsx from "clsx";
 
 const ChatContainer = () => {
-  const { messages, selectedUser, setSelectedUser, sendMessage, getMessages } = useContext(ChatContext);
-  const {authUser , onlineUsers} = useContext(AppContext);
+  const { messages, selectedUser, setSelectedUser, sendMessage, getMessages } =
+    useContext(ChatContext);
+  const { authUser, onlineUsers } = useContext(AppContext);
   const scrollEnd = useRef();
   const [input, setInput] = useState("");
 
-  //handle sending a message
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (input.trim() === "") return null;
@@ -18,49 +19,43 @@ const ChatContainer = () => {
     setInput("");
   };
 
-  // Handle sending an image
   const handleSendImage = async (e) => {
     const file = e.target.files[0];
-
-    // Validate file
-    if (!file || !file.type.startsWith("image/")) {
-      toast.error("Please select a valid image file");
-      return;
-    }
+    if (!file || !file.type.startsWith("image/")) return;
 
     try {
       const reader = new FileReader();
-
       reader.onloadend = async () => {
-        try {
-          await sendMessage({ image: reader.result });
-        } catch (err) {
-          toast.error("Failed to send image");
-          console.error("Send image error:", err);
-        }
+        await sendMessage({ image: reader.result });
       };
-
       reader.readAsDataURL(file);
     } catch (err) {
-      toast.error("An error occurred while reading the image");
       console.error("Image read error:", err);
     }
   };
 
-  useEffect(()=>
-  {
-    if(selectedUser)
-    {
-      getMessages(selectedUser._id)
+  useEffect(() => {
+    if (selectedUser) {
+      getMessages(selectedUser._id);
     }
-  },[selectedUser])
+  }, [selectedUser]);
 
   useEffect(() => {
     if (scrollEnd.current && messages) {
       scrollEnd.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
-  return selectedUser ? (
+
+  if (!selectedUser) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-2 text-gray-500 bg-white/10 max-md:hidden h-full">
+        <img src={assets.logo_icon} className="max-w-16" alt="Chat logo" />
+        <p className="text-lg font-medium text-white">Chat anytime, anywhere</p>
+      </div>
+    );
+  }
+
+  return (
     <div className="h-full overflow-scroll relative backdrop-blur-lg">
       {/* Header */}
       <div className="flex items-center gap-3 py-3 mx-4 border-b border-stone-500">
@@ -71,7 +66,9 @@ const ChatContainer = () => {
         />
         <p className="flex-1 text-lg text-white flex items-center gap-2">
           {selectedUser.fullName}
-          {onlineUsers.includes(selectedUser._id) && <span className="w-2 h-2 rounded-full bg-green-500"></span>}
+          {onlineUsers.includes(selectedUser._id) && (
+            <span className="w-2 h-2 rounded-full bg-green-500"></span>
+          )}
         </p>
         <img
           onClick={() => setSelectedUser(null)}
@@ -85,14 +82,16 @@ const ChatContainer = () => {
           className="max-md:hidden max-w-5"
         />
       </div>
-      {/* chat area */}
+
+      {/* Chat messages */}
       <div className="flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6">
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={`flex items-end gap-2 justify-end ${
-              msg.senderId !==  authUser._id && "flex-row-reverse"
-            }`}
+            className={clsx(
+              "flex items-end gap-2 justify-end",
+              msg.senderId !== authUser._id && "flex-row-reverse"
+            )}
           >
             {msg.image ? (
               <img
@@ -102,22 +101,22 @@ const ChatContainer = () => {
               />
             ) : (
               <p
-                className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${
+                className={clsx(
+                  "p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all text-white bg-violet-500/30",
                   msg.senderId === authUser._id
                     ? "rounded-br-none"
                     : "rounded-bl-none"
-                }`}
+                )}
               >
                 {msg.text}
               </p>
             )}
-
             <div className="text-center text-xs">
               <img
                 src={
                   msg.senderId === authUser._id
-                    ? authUser ?.profilePic
-                    || assets.avatar_icon : selectedUser?.profilePic || assets.avatar_icon
+                    ? authUser?.profilePic || assets.avatar_icon
+                    : selectedUser?.profilePic || assets.avatar_icon
                 }
                 alt="User avatar"
                 className="w-7 rounded-full mx-auto"
@@ -126,22 +125,27 @@ const ChatContainer = () => {
             </div>
           </div>
         ))}
-
         <div ref={scrollEnd}></div>
       </div>
 
-      {/* ------- bottom area ------- */}
+      {/* Bottom input area */}
       <div className="absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3">
         <div className="flex-1 flex items-center bg-gray-700/30 px-4 py-2 rounded-lg">
           <input
             onChange={(e) => setInput(e.target.value)}
             value={input}
-            onKeyDown={(e) => (e.key === "Enter" ? handleSendMessage(e) : null)}
+            onKeyDown={(e) => e.key === "Enter" && handleSendMessage(e)}
             type="text"
             placeholder="Send a message"
             className="flex-1 text-sm bg-transparent border-none outline-none text-white placeholder-gray-400"
           />
-          <input onChange={handleSendImage} type="file" id="image" accept="image/png, image/jpeg" hidden />
+          <input
+            onChange={handleSendImage}
+            type="file"
+            id="image"
+            accept="image/png, image/jpeg"
+            hidden
+          />
           <label htmlFor="image" className="cursor-pointer">
             <img src={assets.gallery_icon} alt="" className="w-5 h-5 mr-2" />
           </label>
@@ -153,11 +157,6 @@ const ChatContainer = () => {
           className="w-7 h-7 cursor-pointer"
         />
       </div>
-    </div>
-  ) : (
-    <div className="flex flex-col items-center justify-center gap-2 text-gray-500 bg-white/10 max-md:hidden h-full">
-      <img src={assets.logo_icon} className="max-w-16" alt="Chat logo" />
-      <p className="text-lg font-medium text-white">Chat anytime, anywhere</p>
     </div>
   );
 };
