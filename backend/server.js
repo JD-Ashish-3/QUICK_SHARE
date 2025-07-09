@@ -42,6 +42,7 @@ app.use("/api/status", (req, res) => res.send("Server is live"));
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
 app.get('/ashish', (req, res) => res.send('Hello from Ashish'));
+app.get('/ashishh', (req, res) => res.send('Hello from Ashishh'));
 
 
 export default app;
