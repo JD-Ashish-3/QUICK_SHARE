@@ -51,6 +51,11 @@ app.use("/api/auth",userRouter)
 app.use("/api/messages",messageRouter)
 
 
+app.get('/ashish', (req, res) => 
+{
+  res.send('Hello from Ashish');
+});
+
 
 const PORT=process.env.PORT || 5000;
 
