@@ -9,6 +9,8 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
+const PORT=5000;
+
 const app = express();
 const server = http.createServer(app);
 
@@ -41,8 +43,13 @@ app.use(cors());
 app.use("/api/status", (req, res) => res.send("Server is live"));
 app.use("/api/auth", userRouter);
 app.use("/api/messages", messageRouter);
-app.get('/ashish', (req, res) => res.send('Hello from Ashish'));
+app.get('/', (req, res) => res.send('Hello from Ashish'));
 app.get('/ashishh', (req, res) => res.send('Hello from Ashishh'));
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
+
 
 
 export default app;
