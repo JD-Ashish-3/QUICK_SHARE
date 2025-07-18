@@ -9,7 +9,7 @@ import { Server } from "socket.io";
 
 dotenv.config();
 
-// const PORT=5000;
+const PORT=5000;
 
 const app = express();
 const server = http.createServer(app);
@@ -46,10 +46,9 @@ app.use("/api/messages", messageRouter);
 app.get('/', (req, res) => res.send('Hello from Ashish'));
 app.get('/ashishh', (req, res) => res.send('Hello from Ashishh'));
 
-// app.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
-
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});
 
 
 export default app;
