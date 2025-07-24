@@ -1,4 +1,4 @@
-# ⚡ QuickShare – Chat & Image Sharing Platform
+# ⚡ QuickChat – Chat & Image Sharing Platform
 
 **QuickShare** is a modern web application for **securely sharing images and chat** across devices. It features user authentication, fast uploads via **Cloudinary**, and a smooth UI powered by **React and Tailwind CSS**.
 
