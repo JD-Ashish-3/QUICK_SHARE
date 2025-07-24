@@ -7,7 +7,7 @@
 ## 🚀 Features
 
 - 🔐 JWT-based user authentication (Sign up / Login)
-- 📤 Upload and share images using **Cloudinary**
+- 📤 Share images in chats using **Cloudinary**
 - 📂 File sharing system backed by **MongoDB Atlas**
 - 🌐 Backend deployed on **Vercel**
 - 🎨 Beautiful and responsive UI using **React + Tailwind CSS**
