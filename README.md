@@ -1,6 +1,6 @@
-# ⚡ QuickShare – File & Image Sharing Platform
+# ⚡ QuickShare – Chat & Image Sharing Platform
 
-**QuickShare** is a modern web application for **securely sharing images and files** across devices. It features user authentication, fast uploads via **Cloudinary**, and a smooth UI powered by **React and Tailwind CSS**.
+**QuickShare** is a modern web application for **securely sharing images and chat** across devices. It features user authentication, fast uploads via **Cloudinary**, and a smooth UI powered by **React and Tailwind CSS**.
 
 ---
 
@@ -39,7 +39,7 @@
 - Users sign up or log in → JWT token generated
 - Token is stored in local storage
 - Protected routes require the token
-- Image/file upload is allowed only if authenticated
+- Chat/Image sharing is allowed only if authenticate
 
 
 
